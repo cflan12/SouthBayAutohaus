@@ -121,10 +121,10 @@ function genesis_constants() {
 
 	//* Define Theme Info Constants
 	define( 'PARENT_THEME_NAME', 'Genesis' );
-	define( 'PARENT_THEME_VERSION', '2.2.3' );
+	define( 'PARENT_THEME_VERSION', '2.2.7' );
 	define( 'PARENT_THEME_BRANCH', '2.2' );
-	define( 'PARENT_DB_VERSION', '2206' );
-	define( 'PARENT_THEME_RELEASE_DATE', date_i18n( 'F j, Y', '1444608000' ) );
+	define( 'PARENT_DB_VERSION', '2210' );
+	define( 'PARENT_THEME_RELEASE_DATE', date_i18n( 'F j, Y', '1457308800' ) );
 #	define( 'PARENT_THEME_RELEASE_DATE', 'TBD' );
 
 	//* Define Directory Location Constants

@@ -22,7 +22,6 @@ if ( class_exists( 'WP_List_Table_Helper' ) and ! class_exists( 'Wpgmp_Location_
 	'per_page' => 200,
 	'actions' => array( 'edit','delete' ),
 	'col_showing_links' => 'location_title',
-	'editrecord_filepath' => WPGMP_VIEWS_PATH.'/location/add_or_edit.php',
 	);
 	return new Wpgmp_Location_Table( $tableinfo );
 

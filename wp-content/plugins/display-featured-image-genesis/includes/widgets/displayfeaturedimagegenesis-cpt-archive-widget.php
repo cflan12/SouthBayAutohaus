@@ -5,7 +5,7 @@
  * @package   DisplayFeaturedImageGenesis
  * @author    Robin Cornett <hello@robincornett.com>
  * @link      http://robincornett.com
- * @copyright 2014 Robin Cornett Creative, LLC
+ * @copyright 2014-2016 Robin Cornett Creative, LLC
  * @license   GPL-2.0+
  * @since 2.0.0
  */
@@ -43,8 +43,9 @@ class Display_Featured_Image_Genesis_Widget_CPT extends WP_Widget {
 		);
 
 		$widget_ops = array(
-			'classname'   => 'featured-posttype',
-			'description' => __( 'Displays a post type archive with its featured image', 'display-featured-image-genesis' ),
+			'classname'                   => 'featured-posttype',
+			'description'                 => __( 'Displays a post type archive with its featured image', 'display-featured-image-genesis' ),
+			'customize_selective_refresh' => true,
 		);
 
 		$control_ops = array(
@@ -73,6 +74,7 @@ class Display_Featured_Image_Genesis_Widget_CPT extends WP_Widget {
 
 		$post_type = get_post_type_object( $instance['post_type'] );
 		$option    = get_option( 'displayfeaturedimagegenesis' );
+		$image_id  = '';
 
 		if ( 'post' === $instance['post_type'] ) {
 			$frontpage       = get_option( 'show_on_front' ); // either 'posts' or 'page'
@@ -86,6 +88,7 @@ class Display_Featured_Image_Genesis_Widget_CPT extends WP_Widget {
 				$title           = get_bloginfo( 'name' );
 				$permalink       = home_url();
 			}
+			$image_id = $postspage_image;
 		}
 		else {
 			$title     = $post_type->label;
@@ -104,8 +107,10 @@ class Display_Featured_Image_Genesis_Widget_CPT extends WP_Widget {
 			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base ) . $args['after_title'];
 		}
 
-		$image     = '';
-		$image_id  = 'post' === $instance['post_type'] ? $postspage_image : displayfeaturedimagegenesis_check_image_id( $option['post_type'][ $post_type->name ] );
+		$image = '';
+		if ( isset( $option['post_type'][ $post_type->name ] )  ) {
+			$image_id = displayfeaturedimagegenesis_check_image_id( $option['post_type'][ $post_type->name ] );
+		}
 		$image_src = wp_get_attachment_image_src( $image_id, $instance['image_size'] );
 		if ( $image_src ) {
 			$image = '<img src="' . $image_src[0] . '" alt="' . $title . '" />';

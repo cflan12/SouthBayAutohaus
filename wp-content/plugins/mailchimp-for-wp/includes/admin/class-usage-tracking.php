@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Class MC4WP_Usage_Tracking
+ *
+ * @access private
+ * @since 2.3
+ * @ignore
+ */
 class MC4WP_Usage_Tracking {
 
 	/**
@@ -45,30 +52,47 @@ class MC4WP_Usage_Tracking {
 	 * @return array
 	 */
 	public function cron_schedules( $schedules ) {
-		$schedules['weekly'] = array(
-			'interval' => 7 * DAY_IN_SECONDS,
-			'display' => __( 'Once Weekly' )
+		$schedules['monthly'] = array(
+			'interval' => 30 * DAY_IN_SECONDS,
+			'display' => __( 'Once a month' )
 		);
 		return $schedules;
 	}
 
 	/**
-	 * Toggle tracking (clears & sets the scheduled tracking event)
+	 * Enable usage tracking
 	 *
-	 * @param bool $enabled
+	 * @return bool
 	 */
-	public function toggle( $enabled ) {
-
-		if( ! $enabled ) {
-			wp_clear_scheduled_hook( 'mc4wp_usage_tracking' );
-			return;
+	public function enable() {
+		// only schedule if not yet scheduled
+		if( ! wp_next_scheduled( 'mc4wp_usage_tracking' ) ) {
+			return wp_schedule_event( time(), 'monthly', 'mc4wp_usage_tracking' );
 		}
 
-		wp_schedule_event( time(), 'weekly', 'mc4wp_usage_tracking' );
+		return true;
+	}
+
+	/**
+	 * Disable usage tracking
+	 */
+	public function disable() {
+		wp_clear_scheduled_hook( 'mc4wp_usage_tracking' );
+	}
+
+	/**
+	 * Toggle tracking (clears & sets the scheduled tracking event)
+	 *
+	 * @param bool $enable
+	 */
+	public function toggle( $enable ) {
+		$enable ? $this->enable() : $this->disable();
 	}
 
 	/**
 	 * Sends the tracking request. Non-blocking.
+	 *
+	 * @return bool
 	 */
 	public function track() {
 		$data = $this->get_tracking_data();
@@ -83,6 +107,8 @@ class MC4WP_Usage_Tracking {
 				'blocking' => false,
 			)
 		);
+
+		return true;
 	}
 
 	/**
@@ -93,9 +119,9 @@ class MC4WP_Usage_Tracking {
 		$data = array(
 			// use md5 hash of home_url, we don't need/want to know the actual site url
 			'site' => md5( home_url() ),
-			'options' => $this->get_tracked_options(),
 			'number_of_mailchimp_lists' => $this->get_mailchimp_lists_count(),
 			'mc4wp_version' => $this->get_mc4wp_version(),
+			'mc4wp_premium_version' => $this->get_mc4wp_premium_version(),
 			'plugins' => (array) get_option( 'active_plugins', array() ),
 			'php_version' => PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION,
 			'curl_version' => $this->get_curl_version(),
@@ -109,26 +135,19 @@ class MC4WP_Usage_Tracking {
 	}
 
 	/**
-	 * Returns the MailChimp for WordPress version (either Lite or Pro if version < 3.0)
+	 * @return string
+	 */
+	public function get_mc4wp_premium_version() {
+		return defined( 'MC4WP_PREMIUM_VERSION' ) ? MC4WP_PREMIUM_VERSION : 0;
+	}
+
+	/**
+	 * Returns the MailChimp for WordPress version
 	 *
 	 * @return string
 	 */
 	protected function get_mc4wp_version() {
-
-		if( defined( 'MC4WP_VERSION' ) ) {
-			return MC4WP_VERSION;
-		}
-
-		if( defined( 'MC4WP_LITE_VERSION' ) ) {
-			return MC4WP_LITE_VERSION;
-		}
-
-		if( defined( 'MC4WP_PRO_VERSION' ) ) {
-			return MC4WP_PRO_VERSION;
-		}
-
-		// never..
-		return 0;
+		return MC4WP_VERSION;
 	}
 
 	/**
@@ -136,33 +155,10 @@ class MC4WP_Usage_Tracking {
 	 */
 	protected function get_mailchimp_lists_count() {
 		$mailchimp = new MC4WP_MailChimp();
-		$lists = $mailchimp->get_lists( false, true );
+		$lists = $mailchimp->get_lists( true );
 		return count( $lists );
 	}
 
-	/**
-	 * @return array
-	 */
-	public function get_tracked_options( ) {
-
-		$checkbox_options = mc4wp_get_options( 'checkbox' );
-		$form_options = mc4wp_get_options( 'form' );
-
-		// make sure these keys are always stripped
-		$ignored_options = array( 'api_key', 'license_key', 'lists' );
-
-		// filter options
-		$checkbox_options = array_diff_key( $checkbox_options, array_flip( $ignored_options ) );
-		$form_options = array_diff_key( $form_options, array_flip( $ignored_options ) );
-
-		// merge options
-		$options = array(
-			'checkbox' => $checkbox_options,
-			'form' => $form_options
-		);
-
-		return $options;
-	}
 
 	/**
 	 * @return string

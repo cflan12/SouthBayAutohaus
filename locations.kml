@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+	<Document>
+		<name>Locations for South Bay Autohaus.</name>
+		<atom:link rel="related" href="https://www.autohaussouthbay.com" />
+		<Folder>
+			<Placemark>
+				<name><![CDATA[South Bay Autohaus]]></name>
+				<address><![CDATA[310 Trousdale Drive, Suite D, CA, 91902, United States]]></address>
+				<description><![CDATA[South Bay Autohaus is San Diego's leading Independent Mercedes-Benz Dealership specializing in Sales, Service, Parts and Repair. Located 10 minutes from downtown San Diego, South Bay Autohaus has been San Diego's Trusted Mercedes-Benz source for over 20 years.]]></description>
+				<Point>
+					<coordinates>-117.0852066,32.6545333,0</coordinates>
+				</Point>
+			</Placemark>
+		</Folder>
+	</Document>
+</kml>

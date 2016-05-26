@@ -61,7 +61,6 @@ if ( class_exists( 'WP_List_Table_Helper' ) and ! class_exists( 'Wpgmp_Maps_Tabl
 	'actions' => array( 'edit','delete','copy' ),
 	'col_showing_links' => 'map_title',
 	'searchExclude' => array( 'shortcodes' ),
-	'editrecord_filepath' => WPGMP_VIEWS_PATH.'/map/add_or_edit.php',
 	);
 	$obj = new Wpgmp_Maps_Table( $tableinfo );
 }

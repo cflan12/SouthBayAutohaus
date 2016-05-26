@@ -338,17 +338,20 @@ function genesis_site_layout( $use_cache = true ) {
 
 	global $wp_query;
 
-	//* If viewing a singular page or post
-	if ( is_singular() ) {
-		$custom_field = genesis_get_custom_field( '_genesis_layout' );
+	//* If viewing a singular page or post, or the posts page, but not the front page
+	if ( is_singular() || ( is_home() && ! genesis_is_root_page() ) ) {
+		$post_id      = is_home() ? get_option( 'page_for_posts' ) : null;
+		$custom_field = genesis_get_custom_field( '_genesis_layout', $post_id );
 		$site_layout  = $custom_field ? $custom_field : genesis_get_option( 'site_layout' );
 	}
 
 	//* If viewing a taxonomy archive
 	elseif ( is_category() || is_tag() || is_tax() ) {
-		$term = $wp_query->get_queried_object();
 
-		$site_layout = $term && isset( $term->meta['layout'] ) && $term->meta['layout'] ? $term->meta['layout'] : genesis_get_option( 'site_layout' );
+		$term        = $wp_query->get_queried_object();
+		$term_layout = $term ? get_term_meta( $term->term_id, 'layout', true) : '';
+		$site_layout = $term_layout ? $term_layout : genesis_get_option( 'site_layout' );
+
 	}
 
 	//* If viewing a supported post type

@@ -38,19 +38,19 @@ $map_data['map_options'] = array(
 'center_lng' => sanitize_text_field( $map->map_all_control['map_center_longitude'] ),
 'zoom' => intval( $map->map_zoom_level ),
 'map_type_id' => sanitize_text_field( $map->map_type ),
-'draggable' => (sanitize_text_field( $map->map_all_control['map_draggable'] ) != 'false'),
+'draggable' => (sanitize_text_field( @$map->map_all_control['map_draggable'] ) != 'false'),
 'scroll_wheel' => sanitize_text_field( $map->map_scrolling_wheel ),
 'display_45_imagery' => sanitize_text_field( $map->map_45imagery ),
-'marker_default_icon' => esc_url( $map->map_all_control['marker_default_icon'] ),
-'infowindow_setting' => wp_unslash( $map->map_all_control['infowindow_setting'] ),
+'marker_default_icon' => esc_url( @$map->map_all_control['marker_default_icon'] ),
+'infowindow_setting' => wp_unslash( @$map->map_all_control['infowindow_setting'] ),
 'default_infowindow_open' => false,
 'infowindow_open_event' => 'click',
-'pan_control' => ($map->map_all_control['pan_control'] != 'false'),
-'zoom_control' => ($map->map_all_control['zoom_control'] != 'false'),
-'map_type_control' => ($map->map_all_control['map_type_control'] != 'false'),
-'scale_control' => ( $map->map_all_control['scale_control'] != 'false'),
-'street_view_control' => ($map->map_all_control['street_view_control'] != 'false'),
-'overview_map_control' => ($map->map_all_control['overview_map_control'] != 'false'),
+'pan_control' => (@$map->map_all_control['pan_control'] != 'false'),
+'zoom_control' => (@$map->map_all_control['zoom_control'] != 'false'),
+'map_type_control' => (@$map->map_all_control['map_type_control'] != 'false'),
+'scale_control' => ( @$map->map_all_control['scale_control'] != 'false'),
+'street_view_control' => (@$map->map_all_control['street_view_control'] != 'false'),
+'overview_map_control' => (@$map->map_all_control['overview_map_control'] != 'false'),
 'pan_control_position' => $map->map_all_control['pan_control_position'],
 'zoom_control_position' => $map->map_all_control['zoom_control_position'],
 'zoom_control_style' => $map->map_all_control['zoom_control_style'],
@@ -173,7 +173,7 @@ if ( '' == $map_data['map_options']['center_lng'] ) {
 
 
 // Street view.
-if ( $map->map_street_view_setting['street_control'] == 'true' ) {
+if ( @$map->map_street_view_setting['street_control'] == 'true' ) {
 	$map_data['street_view'] = array(
 	'street_control'            => @$map->map_street_view_setting['street_control'],
 	'street_view_close_button'  => (@$map->map_street_view_setting['street_view_close_button'] === 'true'?true:false),

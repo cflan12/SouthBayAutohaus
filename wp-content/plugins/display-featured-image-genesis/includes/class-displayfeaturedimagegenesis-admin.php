@@ -7,7 +7,7 @@
  * @author    Robin Cornett <hello@robincornett.com>
  * @license   GPL-2.0+
  * @link      http://robincornett.com
- * @copyright 2015 Robin Cornett Creative, LLC
+ * @copyright 2015-2016 Robin Cornett Creative, LLC
  * @since 2.0.0
  */
 
@@ -20,8 +20,8 @@ class Display_Featured_Image_Genesis_Admin {
 		$this->set_up_taxonomy_columns();
 		$this->set_up_post_type_columns();
 		$this->set_up_author_columns();
-
 		add_action( 'admin_enqueue_scripts', array( $this, 'featured_image_column_width' ) );
+		add_action( 'pre_get_posts', array( $this, 'orderby' ) );
 	}
 
 	/**
@@ -61,6 +61,7 @@ class Display_Featured_Image_Genesis_Admin {
 			}
 			add_filter( "manage_edit-{$post_type}_columns", array( $this, 'add_column' ) );
 			add_action( "manage_{$post_type}_posts_custom_column", array( $this, 'custom_post_columns' ), 10, 2 );
+			add_filter( "manage_edit-{$post_type}_sortable_columns", array( $this, 'make_sortable' ) );
 		}
 	}
 
@@ -106,15 +107,14 @@ class Display_Featured_Image_Genesis_Admin {
 			return;
 		}
 
-		$term_meta = get_option( "displayfeaturedimagegenesis_$term_id" );
-
-		if ( empty( $term_meta['term_image'] ) ) {
+		$image_id = displayfeaturedimagegenesis_get_term_image( $term_id );
+		if ( ! $image_id ) {
 			return;
 		}
 
 		$taxonomy = filter_input( INPUT_POST, 'taxonomy', FILTER_SANITIZE_STRING );
 		$taxonomy = ! is_null( $taxonomy ) ? $taxonomy : get_current_screen()->taxonomy;
-		$image_id = displayfeaturedimagegenesis_check_image_id( $term_meta['term_image'] );
+		$image_id = displayfeaturedimagegenesis_check_image_id( $image_id );
 
 		$args = array(
 			'image_id' => $image_id,
@@ -160,10 +160,10 @@ class Display_Featured_Image_Genesis_Admin {
 	 */
 	public function featured_image_column_width() {
 		$screen = get_current_screen();
-		if ( in_array( $screen->base, array( 'edit', 'edit-tags', 'users' ) ) ) { ?>
+		if ( in_array( $screen->base, array( 'edit', 'edit-tags', 'users' ), true ) ) { ?>
 			<style type="text/css">
 				.column-featured_image { width: 105px; }
-				.column-featured_image img { margin: 0 auto; display: block; height: auto; width: auto; max-width: 60px; max-height: 80px; }
+				.column-featured_image img { margin: 0 auto; height: auto; width: auto; max-width: 60px; max-height: 80px; }
 				@media screen and (max-width: 782px) { .column-featured_image img { margin: 0; } }
 			</style> <?php
 		}
@@ -213,4 +213,45 @@ class Display_Featured_Image_Genesis_Admin {
 		return sprintf( '<img src="%1$s" alt="%2$s" />', $preview[0], $args['alt'] );
 	}
 
+	/**
+	 * Make the featured image column sortable.
+	 * @param $columns
+	 * @return mixed
+	 * @since 2.5.0
+	 */
+	public function make_sortable( $columns ) {
+		$columns['featured_image'] = 'featured_image';
+		return $columns;
+	}
+
+	/**
+	 * Set a custom query to handle sorting by featured image
+	 * @param $query WP_Query
+	 * @since 2.5.0
+	 */
+	public function orderby( $query ) {
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		$orderby = $query->get( 'orderby' );
+		if ( 'featured_image' === $orderby ) {
+			$query->set(
+				'meta_query', array(
+					'relation' => 'OR',
+					array(
+						'key'     => '_thumbnail_id',
+						'compare' => 'NOT EXISTS',
+					),
+					array(
+						'key'     => '_thumbnail_id',
+						'compare' => 'EXISTS',
+					),
+				)
+			);
+			$post_type       = $query->get( 'post_type' );
+			$secondary_order = is_post_type_hierarchical( $post_type ) ? 'title' : 'date';
+			$query->set( 'orderby', "meta_value_num $secondary_order" );
+		}
+	}
 }

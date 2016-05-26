@@ -134,19 +134,67 @@ function genesis_update_check() {
 }
 
 /**
- * Upgrade the database to version 2206.
+ * Upgrade the database to version 2210.
  *
- * @since 2.2.3
+ * @since 2.2.7
  *
  * @uses genesis_update_settings()  Merges new settings with old settings and pushes them into the database.
  * @uses genesis_get_option()       Get theme setting value.
  */
-function genesis_upgrade_2206() {
+function genesis_upgrade_2210() {
 
 	//* Update Settings
 	genesis_update_settings( array(
-		'theme_version'   => '2.2.3',
-		'db_version'      => '2206',
+		'theme_version'        => '2.2.7',
+		'db_version'           => '2210',
+	) );
+
+}
+
+/**
+ * Upgrade the database to version 2209.
+ *
+ * @since 2.2.6
+ *
+ * @uses genesis_update_settings()  Merges new settings with old settings and pushes them into the database.
+ * @uses genesis_get_option()       Get theme setting value.
+ */
+function genesis_upgrade_2209() {
+
+	$term_meta = get_option( 'genesis-term-meta' );
+
+	foreach ( (array) $term_meta as $term_id => $meta ) {
+		foreach ( (array) $meta as $key => $value ) {
+			add_term_meta( $term_id, $key, $value, true );
+		}
+	}
+
+	//* Update Settings
+	genesis_update_settings( array(
+		'theme_version'        => '2.2.6',
+		'db_version'           => '2209',
+	) );
+
+}
+
+/**
+ * Upgrade the database to version 2207.
+ *
+ * @since 2.2.4
+ *
+ * @uses genesis_update_settings()  Merges new settings with old settings and pushes them into the database.
+ * @uses genesis_get_option()       Get theme setting value.
+ */
+function genesis_upgrade_2207() {
+
+	$update_email_address = genesis_get_option( 'update_email' ) ? genesis_get_option( 'update_email_address' ) : '';
+
+	//* Update Settings
+	genesis_update_settings( array(
+		'theme_version'        => '2.2.4',
+		'db_version'           => '2207',
+		'update_email'         => 'unset',
+		'update_email_address' => $update_email_address,
 	) );
 
 }
@@ -349,6 +397,14 @@ function genesis_upgrade() {
 	if ( genesis_get_option( 'db_version', null, false ) >= PARENT_DB_VERSION )
 		return;
 
+	global $wp_db_version;
+
+	//* If the WP db hasn't been upgraded, make them upgrade first.
+	if ( get_option('db_version') != $wp_db_version ) {
+		wp_redirect( admin_url( 'upgrade.php?_wp_http_referer=' . urlencode( wp_unslash( $_SERVER['REQUEST_URI'] ) ) ) );
+ 		exit;
+	}
+
 	#########################
 	# UPDATE TO VERSION 1.0.1
 	#########################
@@ -522,11 +578,25 @@ function genesis_upgrade() {
 		genesis_upgrade_2201();
 
 	###########################
-	# UPDATE DB TO VERSION 2206
+	# UPDATE DB TO VERSION 2207
 	###########################
 
-	if ( genesis_get_option( 'db_version', null, false ) < '2206' )
-		genesis_upgrade_2206();
+	if ( genesis_get_option( 'db_version', null, false ) < '2207' )
+		genesis_upgrade_2207();
+
+	###########################
+	# UPDATE DB TO VERSION 2209
+	###########################
+
+	if ( genesis_get_option( 'db_version', null, false ) < '2209' )
+		genesis_upgrade_2209();
+
+	###########################
+	# UPDATE DB TO VERSION 2210
+	###########################
+
+	if ( genesis_get_option( 'db_version', null, false ) < '2210' )
+		genesis_upgrade_2210();
 
 	do_action( 'genesis_upgrade' );
 

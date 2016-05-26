@@ -1,12 +1,11 @@
-
 # BEGIN WordPress
 <IfModule mod_rewrite.c>
 RewriteEngine On
-RewriteBase /SouthBayAutohaus/
+RewriteBase /southbayautohaus_wp/
 RewriteRule ^index\.php$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /SouthBayAutohaus/index.php [L]
+RewriteRule . /southbayautohaus_wp/index.php [L]
 </IfModule>
 
 # END WordPress

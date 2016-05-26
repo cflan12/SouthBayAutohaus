@@ -1,0 +1,6 @@
+Sitemap: https://www.autohaussouthbay.com/sitemap.xml
+Sitemap: https://www.autohaussoutbay.com/geositemap.xml
+
+# disallow all files in these directories
+User-agent:  *
+Disallow:

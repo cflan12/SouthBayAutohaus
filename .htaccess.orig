@@ -1,0 +1,47 @@
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
+RewriteCond %{HTTP_HOST} ^autohaussouthbay.com [NC]
+RewriteRule ^(.*)$ https://www.autohaussouthbay.com/$1 [L,R=301]
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+RedirectMatch 301 /service.html https://www.autohaussouthbay.com
+RedirectMatch 301 /listing/1991-mercedes-benz-350-sd-turbo-diesel/ https://www.autohaussouthbay.com
+RedirectMatch 301 /listing/2009-mercedes-benz-s550/ https://www.autohaussouthbay.com
+RedirectMatch 301 /listing/1990-mercedes-benz-300ce/ https://www.autohaussouthbay.com
+RedirectMatch 301 http:/www.autohaussouthbay.com/sitemap.html https://www.autohaussouthbay.com
+RedirectMatch 301 /listing/1999-mercedes-benz-c280/ https://www.autohaussouthbay.com
+RedirectMatch 301 /features/leather-seats/ https://www.autohaussouthbay.com
+RedirectMatch 301 /listing/2007-ml350/ https://www.autohaussouthbay.com
+RedirectMatch 301 /listing/2007-mercedes-benz-ml350/ https://www.autohaussouthbay.com
+RedirectMatch 301 /?attachment_id=949 https://www.autohaussouthbay.com
+RedirectMatch 301 /multicolumn-text-layout-with-sidebar/ https://www.autohaussouthbay.com
+RedirectMatch 301 /wp-content/plugins/pippity/themes/smooth_lights/smooth_lights.html https://www.autohaussouthbay.com
+RedirectMatch 301 /?attachment_id=951 https://www.autohaussouthbay.com
+RedirectMatch 301 /wp-content/plugins/pippity/themes/sharpe/styles/sharpe__red.conf https://www.autohaussouthbay.com
+RedirectMatch 301 /listing/1998-mercedes-benz-e320-8900/ https://www.autohaussouthbay.com
+RedirectMatch 301 /attachment_id=1011 https://www.autohaussouthbay.com
+RedirectMatch 301 /listing/2005-mercedes-benz-ml350/attachment/img_2299-2/ https://www.autohaussouthbay.com
+RedirectMatch 301 /listing/2001-mercedes-benz-s430/attachment/s430-mercedes-benz-front/ https://www.autohaussouthbay.com
+RedirectMatch 301 /?attachment_id=951/feed/ https://www.autohaussouthbay.com
+RedirectMatch 301 /?attachment_id=1007 https://www.autohaussouthbay.com
+RedirectMatch 301 /listing/2005-mercedes-benz-ml350/attachment/img_2301-2/ https://www.autohaussouthbay.com
+RedirectMatch 301 /listing/2008-mercedes-benz-c350-sport/attachment/img_2739/ https://www.autohaussouthbay.com
+RedirectMatch 301 /listing/2005-mercedes-benz-ml350/attachment/img_2304-2/ https://www.autohaussouthbay.com
+RedirectMatch 301 /listing/2001-mercedes-benz-s430/attachment/s430-frontseat/ https://www.autohaussouthbay.com
+RedirectMatch 301 /wp-content/themes/Automotiv/scripts/timthumb.php?src=http://www.autohaussouthbay.com/wp-content/uploads/2015/02/2012_mercedesbenz_e350.jpg&w=436&h=300&zc=1&q=90 https://www.autohaussouthbay.com
+RedirectMatch 301 /home.html https://www.autohaussouthbay.com
+RedirectMatch 301 /?attachment_id=1468 https://www.autohaussouthbay.com
+RedirectMatch 301 /listing/2002-mercedes-benz-c240/attachment/img_2084/ https://www.autohaussouthbay.com
+RedirectMatch 301 /repair/ https://www.autohaussouthbay.com
+RedirectMatch 301 /apple-app-site-association https://www.autohaussouthbay.com
+RedirectMatch 301 /well-known/apple-app-site-association https://www.autohaussouthbay.com
+RedirectMatch 301 /comments/feed/ https://www.autohaussouthbay.com
+</IfModule>
+
+# END WordPress
+# Set PHP handler to application/x-httpd-phpbeta on Tue Jan 12 07:09:05 MST 2016.
+AddHandler application/x-httpd-phpbeta .php

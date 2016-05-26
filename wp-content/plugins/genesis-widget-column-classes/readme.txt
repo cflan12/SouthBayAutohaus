@@ -1,9 +1,10 @@
 === Genesis Widget Column Classes ===
 Contributors: keraweb
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=NL&item_name=Genesis%20Widget%20Column%20Classes&item_number=JWPP%2dGWCC&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: genesis, bootstrap, column, widget, dynamik
-Requires at least: 3.6
-Tested up to: 4.3
-Stable tag: 4.3
+Requires at least: 3.1
+Tested up to: 4.5
+Stable tag: 1.1.3
 
 Adds Genesis column classes to widgets.
 
@@ -28,6 +29,20 @@ Or search for "Genesis Widget Column Classes" via your plugins menu.
 
 == Changelog ==
 
+= 1.1.3 =
+
+*	Usage of a single instance of the class
+*	Add support for translate.wordpress.org
+*	Minor code standard fixes
+
+= 1.1.2 =
+
+*	Allow "first" class when no width is selected
+
+= 1.1.1 =
+
+*	Fix: constructor for PHP7
+
 = 1.1 =
 
 *	Make plugin object oriented (OOP)
@@ -46,4 +61,5 @@ Or search for "Genesis Widget Column Classes" via your plugins menu.
 
 You can find me here:
 
-* [Keraweb](http://www.keraweb.nl/ "Keraweb")
+*	[Keraweb](http://www.keraweb.nl/ "Keraweb")
+*	[LinkedIn](https://nl.linkedin.com/in/joryhogeveen "LinkedIn profile")

@@ -1,9 +1,9 @@
 === Ninja Forms ===
 Contributors: wpninjasllc, kstover, jameslaws, wpnzach, kbjohnson90, aman086, daveshine, mordauk, bftrick, helgatheviking
 Tags: form, forms, contact form, custom form, form builder, form creator, form manager, form creation, contact forms, custom forms, forms builder, forms creator, forms manager, forms creation, form administration,
-Requires at least: 3.9
-Tested up to: 4.2.2
-Stable tag: 2.9.28
+Requires at least: 4.3
+Tested up to: 4.5
+Stable tag: 2.9.45
 License: GPLv2 or later
 
 Create forms and manage submissions easily with a simple drag and drop interface. Contact forms, subscription forms, or any other form for WordPress.
@@ -97,13 +97,148 @@ For help and video tutorials, please visit our website: [Ninja Forms Documentati
 
 == Upgrade Notice ==
 
-= 2.9.28 (30 September 2015) =
+= 2.9.45 (2 May 2016) =
+
+*Bugs:*
+
+* Fixed a bug with templating that could cause the server to throw a 500 error.
+
+== Changelog ==
+
+= 2.9.45 (2 May 2016) =
+
+*Bugs:*
+
+* Fixed a bug with templating that could cause the server to throw a 500 error.
+
+= 2.9.44 (28 April 2016) =
 
 *Security:*
 
-* Fixed a security issue that could allow macros to be ran in Excel if a CSV with malicious content was exported. Thanks to Smit B. Shah and Hely H. Shah for the report.
+* Fixed an important security issue related to the 3.0 codebase. It is recommended that all users update to 2.9.44 as soon as possible.
 
-== Changelog ==
+*Bugs:*
+
+* Fixed a bug with one of the security fixes that could cause a fatal error.
+
+= 2.9.43 (28 April 2016) =
+
+*Security:*
+
+* Fixed an important security issue related to the 3.0 codebase. It is recommended that all users update to 2.9.43 as soon as possible.
+
+= 2.9.42 (14 April 2016) =
+
+*Bugs:*
+
+* 3.0: Fixed a bug that could cause merge tags to disappear underneath the full-screen builder.
+
+= 2.9.41 (10 April 2016) =
+
+*Bugs:*
+
+* Fixed a bug that caused Ninja Forms to fetch the add-ons RSS feed too often.
+* Fixed a bug that caused an image to be loaded remotely rather than from the plugin file.
+
+= 2.9.40 (05 April 2016) =
+
+*Changes:*
+
+* 3.0: forms should no longer default to "require logged-in."
+* 3.0: added field type icons to the builder.
+* Added new filters.
+* Updated "tested up to" readme value to 4.5.
+
+*Bugs:*
+
+* 3.0: fixed a whitescreen in the system status page.
+
+= 2.9.39 (22 March 2016) =
+
+*Changes:*
+
+* Removed the anti-spam question from the default contact form in 3.0.
+
+*Bugs:*
+
+* Fixed a conflict with Jetpack that could cause the forms menu item to disappear.
+
+= 2.9.38 (22 March 2016) =
+
+*Changes:*
+
+* Changed the way that our add-on list is cached.
+* Added a Ninja Forms Widget back to version 3.0.
+
+*Bugs:*
+
+* Fixed a bug that could cause a fatal error when downgrading to version 2.9.x.
+
+= 2.9.37 (17 March 2016) =
+
+*Bugs:*
+
+* Fixing a bug with session caching.
+* Fixing a problem with merge tag display in FireFox browsers.
+
+= 2.9.36 (14 March 2016) =
+
+*Changes:*
+
+* Removed Freemius prompt for new users. We will re-enable when things are more stable with 3.0. 
+
+= 2.9.35 (14 March 2016) =
+
+*Bugs:*
+
+* Fixing a bug that could cause un-necessary variable output to the screen.
+
+= 2.9.34 (11 March 2016) =
+
+*Changes:*
+
+* Preparing for the release of 3.0. 
+
+= 2.9.33 (22 December 2015) =
+
+*Bugs:*
+
+* Our security filtering was still filtering out good code. We needed to back off the over-zealous filtering a bit more. 
+
+= 2.9.32 (21 December 2015) =
+
+*Security:*
+
+* In our attempt to back-off some of our over-zealous filtering, we uncorked a previously patched XSS issue. This version fixes both issues.
+
+= 2.9.31 (16 December 2015) =
+
+*Security:*
+
+*Bugs:*
+
+* Our last security fix was a bit over-zealous. This version should prevent all occurances of the phrase 'script' from being stripped from textarea inputs.
+
+= 2.9.30 (11 December 2015) =
+
+*Security:*
+
+* Fixed a serious security issue that could allow for possible SQL injection. Please update as soon as possible.
+
+*Bugs:*
+
+* Fixed a bug that could cause HTML elements in success messages and redirects to be accidentally stripped.
+
+= 2.9.29 (08 December 2015) =
+
+*Security:*
+
+* Fixed a security issue that could allow users to run Javascript on the front-end after a submission in some circumstances. Thank you to Kenan G. ( @K3n4nG on Twitter ) for finding this issue and reporting it to us.
+
+*Bugs:*
+
+* Fixed a bug that could cause session cookies to be set on every page, rather than just upon form submission.
+* Fixed a bug that caused Ninja Forms to override translation strings on non-submission custom post types.
 
 = 2.9.28 (30 September 2015) =
 

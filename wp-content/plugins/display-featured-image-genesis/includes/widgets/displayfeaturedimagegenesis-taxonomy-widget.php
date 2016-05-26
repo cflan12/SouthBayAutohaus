@@ -6,7 +6,7 @@
  * @author    Robin Cornett <hello@robincornett.com>
  * @license   GPL-2.0+
  * @link      http://robincornett.com
- * @copyright 2014 Robin Cornett Creative, LLC
+ * @copyright 2014-2016 Robin Cornett Creative, LLC
  * @since 2.0.0
  */
 
@@ -44,8 +44,9 @@ class Display_Featured_Image_Genesis_Widget_Taxonomy extends WP_Widget {
 		);
 
 		$widget_ops = array(
-			'classname'   => 'featured-term',
-			'description' => __( 'Displays a term with its featured image', 'display-featured-image-genesis' ),
+			'classname'                   => 'featured-term',
+			'description'                 => __( 'Displays a term with its featured image', 'display-featured-image-genesis' ),
+			'customize_selective_refresh' => true,
 		);
 
 		$control_ops = array(
@@ -76,14 +77,13 @@ class Display_Featured_Image_Genesis_Widget_Taxonomy extends WP_Widget {
 		// Merge with defaults
 		$instance = wp_parse_args( (array) $instance, $this->defaults );
 
-		$term_id   = $instance['term'];
-		$term_meta = get_option( "displayfeaturedimagegenesis_$term_id" );
-		$term      = get_term_by( 'id', $term_id, $instance['taxonomy'] );
+		$term_id  = $instance['term'];
+		$term     = get_term_by( 'id', $term_id, $instance['taxonomy'] );
 		if ( ! $term ) {
 			return;
 		}
 
-		$title = $term->meta['headline'];
+		$title = displayfeaturedimagegenesis_get_term_meta( $term, 'headline' );
 		if ( ! $title ) {
 			$title = $term->name;
 		}
@@ -96,16 +96,17 @@ class Display_Featured_Image_Genesis_Widget_Taxonomy extends WP_Widget {
 			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base ) . $args['after_title'];
 		}
 
-		if ( $term_meta ) {
-			$image_id  = displayfeaturedimagegenesis_check_image_id( $term_meta['term_image'] );
-			$image_src = wp_get_attachment_image_src( $image_id, $instance['image_size'] );
+		$image      = '';
+		$term_image = displayfeaturedimagegenesis_get_term_image( $term_id );
+		if ( $term_image ) {
+			$image_src = wp_get_attachment_image_src( $term_image, $instance['image_size'] );
 			if ( $image_src ) {
 				$image = '<img src="' . esc_url( $image_src[0] ) . '" alt="' . esc_html( $title ) . '" />';
 			}
 
 			if ( $instance['show_image'] && $image ) {
 				$role = empty( $instance['show_title'] ) ? '' : 'aria-hidden="true"';
-				printf( '<a href="%s" title="%s" class="%s" %s>%s</a>', esc_url( $permalink ), esc_html( $title ), esc_attr( $instance['image_alignment'] ), esc_attr( $role  ), wp_kses_post( $image ) );
+				printf( '<a href="%s" title="%s" class="%s" %s>%s</a>', esc_url( $permalink ), esc_html( $title ), esc_attr( $instance['image_alignment'] ), esc_attr( $role ), wp_kses_post( $image ) );
 			}
 		}
 
@@ -126,7 +127,8 @@ class Display_Featured_Image_Genesis_Widget_Taxonomy extends WP_Widget {
 
 			echo genesis_html5() ? '<div class="term-description">' : '';
 
-			$intro_text = apply_filters( 'display_featured_image_genesis_term_description', $term->meta['intro_text'] );
+			$intro_text = displayfeaturedimagegenesis_get_term_meta( $term, 'intro_text' );
+			$intro_text = apply_filters( 'display_featured_image_genesis_term_description', $intro_text );
 			if ( ! $intro_text ) {
 				$intro_text = $term->description;
 			}

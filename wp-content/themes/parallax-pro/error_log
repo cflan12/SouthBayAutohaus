@@ -1,0 +1,2 @@
+[01-Mar-2016 13:02:12 America/Denver] PHP Fatal error:  Call to undefined function get_template_directory() in /home7/autohaus/public_html/wp-content/themes/parallax-pro/functions.php on line 3
+[12-Mar-2016 14:38:10 America/Denver] PHP Fatal error:  Call to undefined function get_template_directory() in /home7/autohaus/public_html/wp-content/themes/parallax-pro/functions.php on line 3

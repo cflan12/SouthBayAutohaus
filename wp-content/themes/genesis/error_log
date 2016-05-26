@@ -1,0 +1,2 @@
+[12-Mar-2016 14:38:16 America/Denver] PHP Fatal error:  Call to undefined function do_action() in /home7/autohaus/public_html/wp-content/themes/genesis/lib/init.php on line 15
+[12-Mar-2016 14:38:17 America/Denver] PHP Fatal error:  Call to undefined function genesis_structural_wrap() in /home7/autohaus/public_html/wp-content/themes/genesis/footer.php on line 14

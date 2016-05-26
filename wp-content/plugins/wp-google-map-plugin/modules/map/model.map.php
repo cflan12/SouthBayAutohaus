@@ -48,30 +48,30 @@ if ( ! class_exists( 'WPGMP_Model_Map' ) ) {
 		 */
 		function install() {
 			global $wpdb;
-			$create_map = 'CREATE TABLE `'.$wpdb->prefix.'create_map` (
-			`map_id` int(11) NOT NULL AUTO_INCREMENT,
-			`map_title` varchar(255) DEFAULT NULL,
-			`map_width` varchar(255) DEFAULT NULL,
-			`map_height` varchar(255) DEFAULT NULL,
-			`map_zoom_level` varchar(255) DEFAULT NULL,
-			`map_type` varchar(255) DEFAULT NULL,
-			`map_scrolling_wheel` varchar(255) DEFAULT NULL,
-			`map_visual_refresh` varchar(255) DEFAULT NULL,
-			`map_45imagery` varchar(255) DEFAULT NULL,
-			`map_street_view_setting` text DEFAULT NULL,
-			`map_route_direction_setting` text DEFAULT NULL,
-			`map_all_control` text DEFAULT NULL,
-			`map_info_window_setting` text DEFAULT NULL,
-			`style_google_map` text DEFAULT NULL,
-			`map_locations` text DEFAULT NULL,
-			`map_layer_setting` text DEFAULT NULL,
-			`map_polygon_setting` text DEFAULT NULL,
-			`map_polyline_setting` text DEFAULT NULL,
-			`map_cluster_setting` text DEFAULT NULL,
-			`map_overlay_setting` text DEFAULT NULL,
-			`map_geotags` text DEFAULT NULL,
-			`map_infowindow_setting` text DEFAULT NULL,
-			PRIMARY KEY (`map_id`)
+			$create_map = 'CREATE TABLE '.$wpdb->prefix.'create_map (
+			map_id int(11) NOT NULL AUTO_INCREMENT,
+			map_title varchar(255) DEFAULT NULL,
+			map_width varchar(255) DEFAULT NULL,
+			map_height varchar(255) DEFAULT NULL,
+			map_zoom_level varchar(255) DEFAULT NULL,
+			map_type varchar(255) DEFAULT NULL,
+			map_scrolling_wheel varchar(255) DEFAULT NULL,
+			map_visual_refresh varchar(255) DEFAULT NULL,
+			map_45imagery varchar(255) DEFAULT NULL,
+			map_street_view_setting text DEFAULT NULL,
+			map_route_direction_setting text DEFAULT NULL,
+			map_all_control text DEFAULT NULL,
+			map_info_window_setting text DEFAULT NULL,
+			style_google_map text DEFAULT NULL,
+			map_locations text DEFAULT NULL,
+			map_layer_setting text DEFAULT NULL,
+			map_polygon_setting text DEFAULT NULL,
+			map_polyline_setting text DEFAULT NULL,
+			map_cluster_setting text DEFAULT NULL,
+			map_overlay_setting text DEFAULT NULL,
+			map_geotags text DEFAULT NULL,
+			map_infowindow_setting text DEFAULT NULL,
+			PRIMARY KEY  (map_id)
 			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;';
 
 			return $create_map;

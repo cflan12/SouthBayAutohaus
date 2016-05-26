@@ -52,25 +52,25 @@ if ( ! class_exists( 'WPGMP_Model_Location' ) ) {
 		public function install() {
 
 			global $wpdb;
-			$map_location = 'CREATE TABLE `'.$wpdb->prefix.'map_locations` (
-`location_id` int(11) NOT NULL AUTO_INCREMENT,
-`location_title` varchar(255) DEFAULT NULL,
-`location_address` varchar(255) DEFAULT NULL,
-`location_draggable` varchar(255) DEFAULT NULL,
-`location_infowindow_default_open` varchar(255) DEFAULT NULL,
-`location_animation` varchar(255) DEFAULT NULL,
-`location_latitude` varchar(255) DEFAULT NULL,
-`location_longitude` varchar(255) DEFAULT NULL,
-`location_city` varchar(255) DEFAULT NULL,
-`location_state` varchar(255) DEFAULT NULL,
-`location_country` varchar(255) DEFAULT NULL,
-`location_postal_code` varchar(255) DEFAULT NULL,
-`location_zoom` int(11) DEFAULT NULL,
-`location_messages` text DEFAULT NULL,
-`location_settings` text DEFAULT NULL,
-`location_group_map` text DEFAULT NULL,
-`location_extrafields` text DEFAULT NULL,
-PRIMARY KEY (`location_id`)
+			$map_location = 'CREATE TABLE '.$wpdb->prefix.'map_locations (
+location_id int(11) NOT NULL AUTO_INCREMENT,
+location_title varchar(255) DEFAULT NULL,
+location_address varchar(255) DEFAULT NULL,
+location_draggable varchar(255) DEFAULT NULL,
+location_infowindow_default_open varchar(255) DEFAULT NULL,
+location_animation varchar(255) DEFAULT NULL,
+location_latitude varchar(255) DEFAULT NULL,
+location_longitude varchar(255) DEFAULT NULL,
+location_city varchar(255) DEFAULT NULL,
+location_state varchar(255) DEFAULT NULL,
+location_country varchar(255) DEFAULT NULL,
+location_postal_code varchar(255) DEFAULT NULL,
+location_zoom int(11) DEFAULT NULL,
+location_messages text DEFAULT NULL,
+location_settings text DEFAULT NULL,
+location_group_map text DEFAULT NULL,
+location_extrafields text DEFAULT NULL,
+PRIMARY KEY  (location_id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;';
 
 			return $map_location;
@@ -96,7 +96,7 @@ PRIMARY KEY (`location_id`)
 						$object->location_group_map = $is_category;
 					}
 					// Data convertion for version < 3.0.
-					$is_message = unserialize( base64_decode( $object->location_messages ) );
+					$is_message = @unserialize( base64_decode( $object->location_messages ) );
 					if ( is_array( $is_message ) ) {
 						$object->location_messages = $is_message['googlemap_infowindow_message_one'];
 					}

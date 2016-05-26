@@ -3,7 +3,7 @@
  * Wpgmp_Google_Map_Lite class file.
  * @package Maps
  * @author Flipper Code <hello@flippercode.com>
- * @version 3.0.5
+ * @version 3.1.1
  */
 
 /*
@@ -12,8 +12,8 @@ Plugin URI: http://www.flippercode.com/
 Description: Display Google Maps in Pages, Posts, Sidebar or Custom Templates. Unlimited maps, locations and categories supported. It’s Responsive, Multi-Lingual and Multi-Site Supported.
 Author: flippercode
 Author URI: http://www.flippercode.com/
-Version: 3.0.5
-Text Domain: wpgmp_google_map
+Version: 3.1.1
+Text Domain: wp-google-map-plugin
 Domain Path: /lang/
 */
 
@@ -40,12 +40,14 @@ if ( ! class_exists( 'Wpgmp_Google_Map_Lite' ) ) {
 		 * @var array
 		 */
 		public function __construct() {
-			error_reporting( E_ERROR | E_PARSE );
 			$this->_define_constants();
 			$this->_load_files();
-			$this->modules = glob( WPGMP_MODEL.'**/model.*.php' );
 			register_activation_hook( __FILE__, array( $this, 'plugin_activation' ) );
 			register_deactivation_hook( __FILE__, array( $this, 'plugin_deactivation' ) );
+			if ( is_multisite() ) {
+				add_action( 'wpmu_new_blog', array( $this, 'wpgmp_on_blog_new_generate' ), 10, 6 );
+				add_filter( 'wpmu_drop_tables', array( $this, 'wpgmp_on_blog_delete' ) );
+			}
 			add_action( 'plugins_loaded', array( $this, 'load_plugin_languages' ) );
 			add_action( 'init', array( $this, '_init' ) );
 			add_action( 'widgets_init', array( $this, 'wpgmp_google_map_widget' ) );
@@ -86,10 +88,16 @@ if ( ! class_exists( 'Wpgmp_Google_Map_Lite' ) ) {
 			} else {
 				$wpgmp_apilocation = 'http';
 			}
+
+			$language = get_option( 'wpgmp_language' );
+
+			if ( '' == $language ) {
+				$language = 'en';
+			}
 			if ( get_option( 'wpgmp_api_key' ) != '' ) {
-				$wpgmp_apilocation .= '://www.google.com/jsapi?key='.get_option( 'wpgmp_api_key' );
+				$wpgmp_apilocation .= '://maps.google.com/maps/api/js?key='.get_option( 'wpgmp_api_key' ).'&libraries=geometry,places,weather,panoramio,drawing&language='.$language;
 			} else {
-				$wpgmp_apilocation .= '://www.google.com/jsapi';
+				$wpgmp_apilocation .= '://maps.google.com/maps/api/js?libraries=geometry,places,weather,panoramio,drawing&language='.$language;
 			}
 
 			$scripts[] = array(
@@ -134,12 +142,12 @@ if ( ! class_exists( 'Wpgmp_Google_Map_Lite' ) ) {
 		 * @param  string $content Content.
 		 */
 		function wpgmp_show_location_in_map($atts, $content = null) {
-
+			error_reporting( E_ERROR | E_PARSE );
 			try {
 				$factoryObject = new FactoryControllerWPGMP();
 				$viewObject = $factoryObject->create_object( 'shortcode' );
-				 $output = $viewObject->display( 'put-wpgmp',$atts );
-				 return $output;
+				$output = $viewObject->display( 'put-wpgmp',$atts );
+				return $output;
 
 			} catch (Exception $e) {
 				echo WPGMP_Template::show_message( array( 'error' => $e->getMessage() ) );
@@ -169,7 +177,7 @@ if ( ! class_exists( 'Wpgmp_Google_Map_Lite' ) ) {
 		 * Process slug and display view in the backend.
 		 */
 		function processor() {
-
+			error_reporting( E_ERROR | E_PARSE );
 			$return = '';
 			$page = sanitize_text_field( $_GET['page'] );
 			$pageData = explode( '_', $page );
@@ -211,8 +219,8 @@ if ( ! class_exists( 'Wpgmp_Google_Map_Lite' ) ) {
 			);
 
 			if ( current_user_can( 'manage_options' )  ) {
-								$role = get_role( 'administrator' );
-								$role->add_cap( 'wpgmp_admin_overview' );
+				$role = get_role( 'administrator' );
+				$role->add_cap( 'wpgmp_admin_overview' );
 			}
 
 			$this->load_modules_menu();
@@ -225,53 +233,36 @@ if ( ! class_exists( 'Wpgmp_Google_Map_Lite' ) ) {
 		 */
 		function load_modules_menu() {
 
-			$files = $this->modules;
+			$modules = $this->modules;
 			$pagehooks = array();
+			if ( is_array( $modules ) ) {
+				foreach ( $modules as $module ) {
 
-			if ( is_array( $files ) ) {
-				foreach ( $files as $file ) {
+						$object = new $module;
 
-					$module_info = (get_file_data( $file,array( 'class' => 'Class', 'menu_order' => 'Menu Order' ) ));
-					if ( '' != $module_info['class'] ) {
-						if ( isset( $module_info['menu_order'] ) and  '' != $module_info['menu_order'] ) {
-							$menu_order[ $module_info['menu_order'] ][] = array( $file,$module_info );
-						} else { 						$menu_order[100][] = array( $file, $module_info ); }
-					}
-				}
-			}
-			ksort( $menu_order );
-			foreach ( $menu_order as $order => $menus ) {
+					if ( method_exists( $object,'navigation' ) ) {
 
-				foreach ( $menus as $i => $menu ) {
-					$file = $menu[0];
-					$module_info = $menu[1];
-					if ( file_exists( $file ) ) {
-						include_once( $file );
-						$object = new $module_info['class'];
-						if ( method_exists( $object,'navigation' ) ) {
+						if ( ! is_array( $object->navigation() ) ) {
+							continue;
+						}
 
-							if ( ! is_array( $object->navigation() ) ) {
-								continue;
-							}
+						foreach ( $object->navigation() as $nav => $title ) {
 
-							foreach ( $object->navigation() as $nav => $title ) {
-
-								if ( current_user_can( 'manage_options' ) && is_admin() ) {
-									$role = get_role( 'administrator' );
-									$role->add_cap( $nav );
-
-								}
-
-								$pagehooks[] = add_submenu_page(
-									WPGMP_SLUG,
-									$title,
-									$title,
-									$nav,
-									$nav,
-									array( $this,'processor' )
-								);
+							if ( current_user_can( 'manage_options' ) && is_admin() ) {
+								$role = get_role( 'administrator' );
+								$role->add_cap( $nav );
 
 							}
+
+							$pagehooks[] = add_submenu_page(
+								WPGMP_SLUG,
+								$title,
+								$title,
+								$nav,
+								$nav,
+								array( $this,'processor' )
+							);
+
 						}
 					}
 				}
@@ -290,22 +281,19 @@ if ( ! class_exists( 'Wpgmp_Google_Map_Lite' ) ) {
 		 */
 		function wpgmp_backend_scripts() {
 
-			if ( get_option( 'wpgmp_api_key' ) != '' ) {
-				if ( isset( $_SERVER['HTTPS'] ) && ( 'on' == $_SERVER['HTTPS'] || 1 == $_SERVER['HTTPS'] ) || isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && 'https' == $_SERVER['HTTP_X_FORWARDED_PROTO'] ) {
-					$wpgmp_apilocation = 'https';
-				} else {
-					$wpgmp_apilocation = 'http';
-				}
-
-				$wpgmp_apilocation .= '://www.google.com/jsapi?key='.get_option( 'wpgmp_api_key' );
+			if ( isset( $_SERVER['HTTPS'] ) && ( 'on' == $_SERVER['HTTPS'] || 1 == $_SERVER['HTTPS'] ) || isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && 'https' == $_SERVER['HTTP_X_FORWARDED_PROTO'] ) {
+				$wpgmp_apilocation = 'https';
 			} else {
-				if ( isset( $_SERVER['HTTPS'] ) && ( 'on' == $_SERVER['HTTPS'] || 1 == $_SERVER['HTTPS'] ) || isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && 'https' == $_SERVER['HTTP_X_FORWARDED_PROTO'] ) {
-					$wpgmp_apilocation = 'https';
-				} else {
-					$wpgmp_apilocation = 'http';
-				}
-
-				$wpgmp_apilocation .= '://www.google.com/jsapi';
+				$wpgmp_apilocation = 'http';
+			}
+			$language = get_option( 'wpgmp_language' );
+			if ( '' == $language ) {
+				$language = 'en';
+			}
+			if ( get_option( 'wpgmp_api_key' ) != '' ) {
+				$wpgmp_apilocation .= '://maps.google.com/maps/api/js?key='.get_option( 'wpgmp_api_key' ).'&libraries=geometry,places,weather,panoramio,drawing&language='.$language;
+			} else {
+				$wpgmp_apilocation .= '://maps.google.com/maps/api/js?libraries=geometry,places,weather,panoramio,drawing&language='.$language;
 			}
 
 			wp_enqueue_style( 'thickbox' );
@@ -371,7 +359,7 @@ if ( ! class_exists( 'Wpgmp_Google_Map_Lite' ) ) {
 		/**
 		 * Call hook on plugin activation for both multi-site and single-site.
 		 */
-		function plugin_activation() {
+		function plugin_activation( $network_wide ) {
 
 			if ( is_multisite() && $network_wide ) {
 				global $wpdb;
@@ -396,7 +384,7 @@ if ( ! class_exists( 'Wpgmp_Google_Map_Lite' ) ) {
 		/**
 		 * Call hook on plugin deactivation for both multi-site and single-site.
 		 */
-		function plugin_deactivation() {
+		function plugin_deactivation( $network_wide ) {
 
 			if ( is_multisite() && $network_wide ) {
 				global $wpdb;
@@ -418,7 +406,31 @@ if ( ! class_exists( 'Wpgmp_Google_Map_Lite' ) ) {
 				$this->wpgmp_deactivation();
 			}
 		}
+		/**
+		 * Perform tasks on new blog create and table install.
+		 */
 
+		function wpgmp_on_blog_new_generate(  $blog_id, $user_id, $domain, $path, $site_id, $meta ) {
+
+			if ( is_plugin_active_for_network( plugin_basename( __FILE__ ) ) ) {
+				switch_to_blog( $blog_id );
+				$this->wpgmp_activation();
+				restore_current_blog();
+			}
+
+		}
+
+		/**
+		 * Perform tasks on when blog deleted and remove plugin tables.
+		 */
+
+		function wpgmp_on_blog_delete( $tables ) {
+			global $wpdb;
+			$tables[] = str_replace( $wpdb->base_prefix, $wpdb->prefix, TBL_LOCATION );
+			$tables[] = str_replace( $wpdb->base_prefix, $wpdb->prefix, TBL_GROUPMAP );
+			$tables[] = str_replace( $wpdb->base_prefix, $wpdb->prefix, TBL_MAP );
+			return $tables;
+		}
 		/**
 		 * Create choose icon tab in media manager.
 		 * @param  array $tabs Current Tabs.
@@ -473,10 +485,10 @@ if ( ! class_exists( 'Wpgmp_Google_Map_Lite' ) ) {
 		$('.read_icons').show();
 		else {
 		$('.read_icons').hide();
-        $('img[title^="' + $(this).val() + '"]').parent().show();
+		$('img[title^="' + $(this).val() + '"]').parent().show();
 		}
 
-    	});
+		});
 
 		});
 
@@ -497,7 +509,7 @@ if ( ! class_exists( 'Wpgmp_Google_Map_Lite' ) ) {
 
 		<form enctype="multipart/form-data" method="post" action="<?php echo esc_attr( $form_action_url ); ?>" class="media-upload-form" id="library-form">
 	<h3 class="media-title" style="color: #5A5A5A; font-family: Georgia, 'Times New Roman', Times, serif; font-weight: normal; font-size: 1.6em; margin-left: 10px;"><?php _e( 'Choose icon', WPGMP_TEXT_DOMAIN ) ?> 	<input name="wpgmp_search_icon" id="wpgmp_search_icon" type='text' value="" placeholder="<?php _e( 'Search icons',WPGMP_TEXT_DOMAIN ); ?>" />
-</h3>
+	</h3>
 	<div style="margin-bottom:20px; float:left; width:100%;">
 	<ul style="float:left; width:100%;" id="select_icons">
 	<?php
@@ -539,26 +551,18 @@ if ( ! class_exists( 'Wpgmp_Google_Map_Lite' ) ) {
 		 * Perform tasks on plugin deactivation.
 		 */
 		function wpgmp_activation() {
-
 			global $wpdb;
 
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-			$files = $this->modules;
+			$modules = $this->modules;
 			$pagehooks = array();
 
-			if ( is_array( $files ) ) {
-				foreach ( $files as $file ) {
-
-					$module_info = (get_file_data( $file,array( 'class' => 'Class', 'menu_order' => 'Menu Order' ) ));
-					if ( '' != $module_info['class'] ) {
-						if ( file_exists( $file ) ) {
-							include_once( $file );
-							$object = new $module_info['class'];
-							if ( method_exists( $object,'install' ) ) {
+			if ( is_array( $modules ) ) {
+				foreach ( $modules as $module ) {
+					$object = new $module;
+					if ( method_exists( $object,'install' ) ) {
 								$tables[] = $object->install();
-							}
-						}
 					}
 				}
 			}
@@ -582,7 +586,7 @@ if ( ! class_exists( 'Wpgmp_Google_Map_Lite' ) ) {
 			}
 
 			if ( ! defined( 'WPGMP_VERSION' ) ) {
-				define( 'WPGMP_VERSION', '3.0.0' );
+				define( 'WPGMP_VERSION', '3.1.1' );
 			}
 
 			if ( ! defined( 'WPGMP_TEXT_DOMAIN' ) ) {
@@ -623,10 +627,6 @@ if ( ! class_exists( 'Wpgmp_Google_Map_Lite' ) ) {
 
 			if ( ! defined( 'WPGMP_INC_URL' ) ) {
 				define( 'WPGMP_INC_URL', WPGMP_URL.'includes/' );
-			}
-
-			if ( ! defined( 'WPGMP_VIEWS_PATH' ) ) {
-				define( 'WPGMP_VIEWS_PATH', WPGMP_CLASSES.'view' );
 			}
 
 			if ( ! defined( 'WPGMP_CSS' ) ) {
@@ -699,6 +699,19 @@ if ( ! class_exists( 'Wpgmp_Google_Map_Lite' ) ) {
 			);
 			foreach ( $files_to_include as $file ) {
 				require_once( WPGMP_CORE_CLASSES.$file );
+			}
+			// Load all modules.
+			$core_modules = array( 'overview','location','map','group_map','settings' );
+			if ( is_array( $core_modules ) ) {
+				foreach ( $core_modules as $module ) {
+
+					$file = WPGMP_MODEL.$module.'/model.'.$module.'.php';
+					if ( file_exists( $file ) ) {
+						include_once( $file );
+						$class_name = 'WPGMP_Model_'.ucwords( $module );
+						array_push( $this->modules, $class_name );
+					}
+				}
 			}
 		}
 	}

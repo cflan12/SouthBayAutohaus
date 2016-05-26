@@ -3,8 +3,8 @@ Contributors: slidervilla
 Tags: testimonial, slider, slideshow, feedback, content slider, responsive, widget, content, jquery, gallery, custom post type, sidebar, wpmu
 Donate link: http://www.clickonf5.org/go/donate-wp-plugins/
 Requires at least: 3.0
-Tested up to: 4.3
-Stable tag: 1.2.1
+Tested up to: 4.4.1
+Stable tag: 1.2.3
 License: GPLv2 or later
 
 Display your happy customers' Testimonials in a neat Responsive Slider 
@@ -115,6 +115,11 @@ Visit the plugin page (http://slidervilla.com/testimonial-slider/) for recent FA
 No major issues!
 
 == Changelog ==
+
+* 1.2.3 (02/01/2016)
+1. Fix: Notices on sliders panel
+2. Fix: Avatar image enable/disable switch was not working
+3. Fix: Post meta box => Customer image link was not getting inserted.
 
 * 1.2.1 (08/21/2015)
 

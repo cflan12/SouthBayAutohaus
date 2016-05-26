@@ -64,7 +64,6 @@ if ( class_exists( 'WP_List_Table_Helper' ) and ! class_exists( 'Wpgmp_Manage_Gr
 					    'per_page' => 20,
 					    'col_showing_links' => 'group_map_title',
 					    'searchExclude' => array( 'group_parent' ),
-					    'editrecord_filepath' => WPGMP_VIEWS_PATH.'/group_map/add_or_edit.php',
 	);
 	return new Wpgmp_Manage_Group_Table( $tableinfo );
 

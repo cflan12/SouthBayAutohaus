@@ -81,6 +81,10 @@ add_filter( 'post_class', 'genesis_entry_post_class' );
  */
 function genesis_entry_post_class( $classes ) {
 
+	if ( is_admin() ) {
+		return $classes;
+	}
+
 	//* Add "entry" to the post class array
 	$classes[] = 'entry';
 
@@ -105,6 +109,10 @@ add_filter( 'post_class', 'genesis_custom_post_class', 15 );
  */
 function genesis_custom_post_class( array $classes ) {
 
+	if ( is_admin() ) {
+		return $classes;
+	}
+
 	$new_class = genesis_get_custom_field( '_genesis_custom_post_class' );
 
 	if ( $new_class )
@@ -128,9 +136,13 @@ add_filter( 'post_class', 'genesis_featured_image_post_class' );
  */
 function genesis_featured_image_post_class( $classes ) {
 
+	if ( is_admin() ) {
+		return $classes;
+	}
+
     $image = genesis_get_image();
 
-    if ( $image && ! in_array( 'has-post-thumbnail', $classes ) ) {
+    if ( $image && ! is_singular() && genesis_get_option( 'content_archive_thumbnail' ) && ! in_array( 'has-post-thumbnail', $classes ) ) {
         $classes[] = 'has-post-thumbnail';
     }
 

@@ -78,7 +78,7 @@ if ( ! class_exists( 'WPGMP_Core_Controller' ) ) {
 		protected function do_action( $action = '' ) {
 
 			global $wpdb;
-
+			$response = '';
 			try {
 				if ( isset( $_POST['operation'] ) and sanitize_text_field( wp_unslash( $_POST['operation'] ) ) != '' ) {
 					$operation = sanitize_text_field( wp_unslash( $_POST['operation'] ) );

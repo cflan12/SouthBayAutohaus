@@ -49,14 +49,14 @@ if ( ! class_exists( 'WPGMP_Model_Group_Map' ) ) {
 		 */
 		function install() {
 			global $wpdb;
-			$group_map = 'CREATE TABLE `'.$wpdb->prefix.'group_map` (
-			`group_map_id` int(11) NOT NULL AUTO_INCREMENT,
-			`group_map_title` varchar(255) DEFAULT NULL,
-			`group_marker` text DEFAULT NULL,
-			`group_setting` text DEFAULT NULL,
-			`group_parent` int(11) DEFAULT 0,
-			`group_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-			PRIMARY KEY (`group_map_id`)
+			$group_map = 'CREATE TABLE '.$wpdb->prefix.'group_map (
+			group_map_id int(11) NOT NULL AUTO_INCREMENT,
+			group_map_title varchar(255) DEFAULT NULL,
+			group_marker text DEFAULT NULL,
+			group_setting text DEFAULT NULL,
+			group_parent int(11) DEFAULT 0,
+			group_added timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+			PRIMARY KEY  (group_map_id)
 			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;';
 			return $group_map;
 		}
